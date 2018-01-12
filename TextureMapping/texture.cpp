@@ -1,6 +1,7 @@
 /************************************************************** 
  *
- *  Opengl ES 3.0 2D Texture mapping 
+ *  Opengl ES 3.0 2D Texture mapping
+ *  Reads a texture from a bmp file  
  *
  *  sudo apt-get install libglfw3-dev libgles2-mesa-dev
  *  gcc texture.cpp readBMP.cpp -lGLESv2 -lglfw -o 2Dtexture
