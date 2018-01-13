@@ -54,7 +54,7 @@ static const GLchar* vertex_shader_source =
       "out vec4 v_color;			  \n"
       "void main()                                \n"
       "{                                          \n"
-      "   v_color = a_color;    		   \n"
+      "   v_color = a_color;    		  \n"
       "   gl_Position = a_position*u_mvpMatrix;	  \n"
       "}                                          \n";
 static const GLchar* fragment_shader_source =
