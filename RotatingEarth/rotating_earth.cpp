@@ -1,19 +1,11 @@
-/************************************************************** 
+/***************************************************************** 
  *  
  *  OpenGLES 3.0 Program to map a earth texture to a sphere
  *  & rotate the earth for every key press.
- * 
- *  Running OpenglEs on desktop requires an emulator.
- *  You could use an emulator like Mali OpenGL ES 
- *  emulator however the minimum requirements are 
- *  - OpenGL 3.2 – when OpenGL ES 2.0 contexts are used
- *  - OpenGL 3.3 – when OpenGL ES 3.0 contexts are used
- *  - OpenGL 4.3 – when OpenGL ES 3.1 or 3.2 contexts are used
- *  and my system only supports OpenGL 3.0. 
- *  Hence using GLFW library. 
  *
- *  Ensure to enable GL_DEPTH_TEST * set glDepthFunc(GL_LEQUAL)    
- * 
+ *  -Ensure to enable GL_DEPTH_TEST * set glDepthFunc(GL_LEQUAL)    
+ *  -Ensure to clear the Depth buffer for every key press
+ *
  *  sudo apt-get install libglfw3-dev libgles2-mesa-dev
  *  gcc rotating_earth.cpp sphere_gen.cpp transform.cpp 
  *  load_shader.cpp readBMP.cpp -g -I . -lGLESv2 -lglfw -lm 
@@ -22,7 +14,7 @@
  *  Author : Mathew P Joseph
  *  email  : mathew.p.joseph@gmail.com
  *
- *************************************************************/
+ *****************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -105,8 +97,6 @@ struct Image image;
 
 GLuint CreateSimpleTexture2D( )
 {
-   // Texture object handle
-   GLuint textureId;
    char BMPfile[] = "earth.bmp";
    ImageLoad(BMPfile, &image);
    char *pixels = image.data;
@@ -141,8 +131,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     // key_callback somehow gets called twice for every
     // key press. So limiting it to one...	 
     if(entry%2 == 0){
-    // Generate a model view matrix to rotate/translate the sphere
-    esMatrixLoadIdentity ( &modelview );
+		// Clear the Depth Buffer for each frame!
+		glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+		
+	    	// Generate a model view matrix to rotate/translate the sphere
+    		esMatrixLoadIdentity ( &modelview );
 		// Rotate the sphere
     		angle += 1.0f;
     		esRotate (&modelview, angle, 0.0, 1.0, 0.0 );
@@ -171,11 +164,8 @@ int main(int argc, char* argv[]) {
     //Keyboard Callback
     glfwSetKeyCallback(window, key_callback);
 
-    // Commenting out GL_DEPTH_TEST seems to 
-    // have a +ve effect on rendering the sphere when 
-    // its rotated but adds new artifacts
-    //glEnable ( GL_DEPTH_TEST );
-    //glDepthFunc(GL_LEQUAL);  
+    glEnable ( GL_DEPTH_TEST );
+    glDepthFunc(GL_LEQUAL);  
     printf("GL_VERSION  : %s\n", glGetString(GL_VERSION) );
     printf("GL_RENDERER : %s\n", glGetString(GL_RENDERER) );
 
@@ -187,7 +177,7 @@ int main(int argc, char* argv[]) {
     esMatrixLoadIdentity ( &modelview );
 
     // Rotate the sphere
-    angle = 30.0f;	
+    angle = 135.0f;	
     esRotate ( &modelview, angle, 0.0, 1.0, 0.0 );
 
     esMatrixMultiply ( &mvpMatrix, &modelview, &ortho );
