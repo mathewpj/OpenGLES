@@ -165,7 +165,8 @@ int main(int argc, char* argv[]) {
     glfwSetKeyCallback(window, key_callback);
 
     glEnable ( GL_DEPTH_TEST );
-    glDepthFunc(GL_LEQUAL);  
+    glDepthFunc( GL_LEQUAL );
+    glCullFace( GL_BACK );	  
     printf("GL_VERSION  : %s\n", glGetString(GL_VERSION) );
     printf("GL_RENDERER : %s\n", glGetString(GL_RENDERER) );
 
@@ -201,7 +202,7 @@ int main(int argc, char* argv[]) {
     glUseProgram(shader_program);
 
 
-    numIndices = esGenSphere ( 300, 1.5f, &vertices, NULL,
+    numIndices = esGenSphere ( 100, 1.5f, &vertices, NULL,
                               &texcoords, &indices );
 
     glVertexAttribPointer(ver, 3, GL_FLOAT, GL_FALSE, 0, vertices);
