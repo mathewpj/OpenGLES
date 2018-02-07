@@ -67,6 +67,60 @@ GLushort indices[] = { 1, 2, 0, 0, 2, 3 };
 
 Shader shader;
 
+void SetLightParameters(GLuint shader_id)
+{
+
+    ver = glGetAttribLocation(shader.id(), "a_position");
+    nor = glGetAttribLocation(shader.id(), "a_normal");
+    light_Loc = glGetUniformLocation (shader.id(), "lightPosition" );
+    l_ambientLoc = glGetUniformLocation (shader.id(), "lambient" );
+    m_ambientLoc = glGetUniformLocation (shader.id(), "mambient" );
+    l_diffuseLoc = glGetUniformLocation (shader.id(), "ldiffuse" );
+    m_diffuseLoc = glGetUniformLocation (shader.id(), "mdiffuse" );
+    l_specularLoc = glGetUniformLocation (shader.id(), "lspecular" );
+    m_specularLoc = glGetUniformLocation (shader.id(), "mspecular" );
+    mvLoc = glGetUniformLocation (shader.id(), "mvMatrix" );
+    mvpLoc = glGetUniformLocation (shader.id(), "mvpMatrix" );
+    normalLoc = glGetUniformLocation (shader.id(), "normalMatrix" );
+    shineLoc = glGetUniformLocation (shader.id(), "shininess" );
+
+    // Load the Light Position
+    // Light Position in Model space
+    glm::vec3 lPosition = glm::vec4(0.0, 0.0, 0.0, 0.0);
+    glUniform4fv (light_Loc , 1, ( GLfloat * ) &lPosition);
+    
+    // Load the light ambient properties
+    glm::vec3 lAmbient = glm::vec3(0.2, 0.0, 0.0);
+    glUniform3fv (l_ambientLoc , 1, ( GLfloat * ) &lAmbient);
+    	
+    // Load the material ambient properties
+    glm::vec3 mAmbient = glm::vec3(0.1, 0.0, 0.0);
+    glUniform3fv (m_ambientLoc , 1, ( GLfloat * ) &mAmbient);
+    
+    // Load the light diffuse properties
+    glm::vec3 lDiffuse = glm::vec3(1.0, 0.0, 0.0);
+    glUniform3fv (l_diffuseLoc , 1, ( GLfloat * ) &lDiffuse);
+    	
+    // Load the material diffuse properties
+    glm::vec3 mDiffuse = glm::vec3(0.1, 0.6, 0.6);
+    glUniform3fv (m_diffuseLoc , 1, ( GLfloat * ) &mDiffuse);
+    
+    // Load the light specular properties
+    glm::vec3 lSpecular = glm::vec3(1.0, 0.0, 0.0);
+    glUniform3fv (l_specularLoc , 1, ( GLfloat * ) &lSpecular);
+    	
+    // Load the material specular properties
+    glm::vec3 mSpecular = glm::vec3(1.0, 1.0, 0.0);
+    glUniform3fv (m_specularLoc , 1, ( GLfloat * ) &mSpecular);
+    	 
+    // Load the material shininess properties
+    GLfloat Shine = 32.0;
+    glUniform1f (shineLoc , Shine);
+   
+    return; 
+}
+
+
 int main(int argc, char* argv[]) {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
@@ -113,7 +167,6 @@ int main(int argc, char* argv[]) {
     glm::mat4 MVP = Projection*ViewMatrix*ModelMatrix;
 
     // 8) Load the Shaders	
-    //shader_program = common_get_shader_program(vertex_shader_source, fragment_shader_source);
     shader.init("vertex.sh", "fragment.sh");
 	
     // 9) Set the ViewPort  
@@ -126,65 +179,16 @@ int main(int argc, char* argv[]) {
     // loading the uniform variables & passing "in" variables 
     // to shader
     glUseProgram(shader.id());
-
  
-    // Get the uniform & "in" variable locations
-    ver = glGetAttribLocation(shader.id(), "a_position");
-    nor = glGetAttribLocation(shader.id(), "a_normal");
-    light_Loc = glGetUniformLocation (shader.id(), "LightPosition" );
-    l_ambientLoc = glGetUniformLocation (shader.id(), "lambient" );
-    m_ambientLoc = glGetUniformLocation (shader.id(), "mambient" );
-    l_diffuseLoc = glGetUniformLocation (shader.id(), "ldiffuse" );
-    m_diffuseLoc = glGetUniformLocation (shader.id(), "mdiffuse" );
-    l_specularLoc = glGetUniformLocation (shader.id(), "lspecular" );
-    m_specularLoc = glGetUniformLocation (shader.id(), "mspecular" );
-    mvLoc = glGetUniformLocation (shader.id(), "mvMatrix" );
-    mvpLoc = glGetUniformLocation (shader.id(), "mvpMatrix" );
-    normalLoc = glGetUniformLocation (shader.id(), "normalMatrix" );
-    shineLoc = glGetUniformLocation (shader.id(), "shininess" );
-    
-    //numIndices = esGenSphere ( 100, 2.0f, &vertices, &normals,
-    //                          &texcoords, &indices );
+    // 10) Set the light and material properties
+    SetLightParameters(shader.id());
 
+    // 11) Pass the vertex VBO
     glVertexAttribPointer(ver, 3, GL_FLOAT, GL_FALSE, 0, vVertices);
     glEnableVertexAttribArray(ver);
     
-   // glVertexAttribPointer(nor, 3, GL_FLOAT, GL_FALSE, 0, normals);
-   // glEnableVertexAttribArray(nor);
-  
-    // Load the Light Position
-    // Light Position in Model space
-    glm::vec3 lPosition = glm::vec4(0.0, 0.0, 0.0, 0.0);
-    glUniform3fv (light_Loc , 1, ( GLfloat * ) &lPosition);
-    
-    // Load the light ambient properties
-    glm::vec3 lAmbient = glm::vec3(0.2, 0.0, 0.0);
-    glUniform3fv (l_ambientLoc , 1, ( GLfloat * ) &lAmbient);
-    	
-    // Load the material ambient properties
-    glm::vec3 mAmbient = glm::vec3(0.1, 0.0, 0.0);
-    glUniform3fv (m_ambientLoc , 1, ( GLfloat * ) &mAmbient);
-    
-    // Load the light diffuse properties
-    glm::vec3 lDiffuse = glm::vec3(1.0, 0.0, 0.0);
-    glUniform3fv (l_diffuseLoc , 1, ( GLfloat * ) &lDiffuse);
-    	
-    // Load the material diffuse properties
-    glm::vec3 mDiffuse = glm::vec3(0.1, 0.6, 0.6);
-    glUniform3fv (m_diffuseLoc , 1, ( GLfloat * ) &mDiffuse);
-    
-    // Load the light specular properties
-    glm::vec3 lSpecular = glm::vec3(1.0, 0.0, 0.0);
-    glUniform3fv (l_specularLoc , 1, ( GLfloat * ) &lSpecular);
-    	
-    // Load the material specular properties
-    glm::vec3 mSpecular = glm::vec3(1.0, 1.0, 0.0);
-    glUniform3fv (m_specularLoc , 1, ( GLfloat * ) &mSpecular);
-    	 
-    // Load the material shininess properties
-    GLfloat Shine = 32.0;
-    glUniform1f (shineLoc , Shine);
-    
+    //numIndices = esGenSphere ( 100, 2.0f, &vertices, &normals,
+    //                          &texcoords, &indices );
     // Load the MV matrix
     glUniformMatrix4fv ( mvLoc, 1, GL_FALSE, ( GLfloat * ) &MV[0][0] );
     // Load the MVP matrix
