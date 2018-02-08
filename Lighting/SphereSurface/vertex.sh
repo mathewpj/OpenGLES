@@ -15,9 +15,9 @@ void main()
 {
       vertex_in_eye_coord = vec3(mvMatrix * vec4(a_position, 1.0));
       LightPos_in_eye_coord = vec3(mvMatrix * lightPosition);
+      // In the case of a Sphere normalized vertex co-ordinates 
+      // is equal to surface normals	
       vertex_to_fragment_normal = normalMatrix*normalize(a_position);
-      // Works , bt above not working	
-      //vertex_to_fragment_normal = normalMatrix*vec3(0.0, 0.0, 1.0); 
       // Set the position of the current vertex
       gl_Position = mvpMatrix * vec4(a_position, 1.0);
 }

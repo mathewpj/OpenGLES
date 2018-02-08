@@ -34,14 +34,13 @@ static const GLuint HEIGHT = 500;
 
     // Making these global variables 
 
-    GLuint shader_program;
+    GLuint 	shader_program;
     GLFWwindow* window;
 
     // Vertex data
     GLfloat  *vertices;
-    GLfloat  *normals;
-    GLuint *indices;
-    GLint numIndices;
+    GLuint   *indices;
+    GLint    numIndices;
  
     
     // Uniform locations
@@ -57,26 +56,14 @@ static const GLuint HEIGHT = 500;
     GLint  light_Loc;
     GLint  shineLoc;
     // Shader "IN" locations	
-    GLint ver, nor, tex;
+    GLint ver, tex;
    
-    GLfloat  aspect;
-    GLfloat  angle;
-
-static const GLfloat vVertices[] = {
-                            -3.0f, -3.0f, -6.0f,  // Position 0
-                             3.0f, -3.0f, -6.0f,  // Position 1
-                             3.0f,  3.0f, -6.0f,  // Position 2
-                            -3.0f,  3.0f, -6.0f,  // Position 3
-                         };
-//GLushort indices[] = { 1, 2, 0, 0, 2, 3 };
-
 Shader shader;
 
 void SetLightParameters(GLuint shader_id)
 {
 
     ver = glGetAttribLocation(shader.id(), "a_position");
-    nor = glGetAttribLocation(shader.id(), "a_normal");
     light_Loc = glGetUniformLocation (shader.id(), "lightPosition" );
     l_ambientLoc = glGetUniformLocation (shader.id(), "lambient" );
     m_ambientLoc = glGetUniformLocation (shader.id(), "mambient" );
@@ -91,11 +78,11 @@ void SetLightParameters(GLuint shader_id)
 
     // Load the Light Position
     // Light Position in Model space
-    glm::vec3 lPosition = glm::vec4(1.0, 0.0, 0.0, 0.0);
+    glm::vec3 lPosition = glm::vec4(0.0, 0.0, 0.0, 0.0);
     glUniform4fv (light_Loc , 1, ( GLfloat * ) &lPosition);
     
     // Load the light ambient properties
-    glm::vec3 lAmbient = glm::vec3(0.2, 0.0, 0.0);
+    glm::vec3 lAmbient = glm::vec3(0.4, 0.0, 0.0);
     glUniform3fv (l_ambientLoc , 1, ( GLfloat * ) &lAmbient);
     	
     // Load the material ambient properties
@@ -103,11 +90,11 @@ void SetLightParameters(GLuint shader_id)
     glUniform3fv (m_ambientLoc , 1, ( GLfloat * ) &mAmbient);
     
     // Load the light diffuse properties
-    glm::vec3 lDiffuse = glm::vec3(0.3, 0.0, 0.0);
+    glm::vec3 lDiffuse = glm::vec3(1.0, 0.0, 0.0);
     glUniform3fv (l_diffuseLoc , 1, ( GLfloat * ) &lDiffuse);
     	
     // Load the material diffuse properties
-    glm::vec3 mDiffuse = glm::vec3(0.1, 0.6, 0.6);
+    glm::vec3 mDiffuse = glm::vec3(0.4, 0.6, 0.6);
     glUniform3fv (m_diffuseLoc , 1, ( GLfloat * ) &mDiffuse);
     
     // Load the light specular properties
@@ -119,7 +106,7 @@ void SetLightParameters(GLuint shader_id)
     glUniform3fv (m_specularLoc , 1, ( GLfloat * ) &mSpecular);
     	 
     // Load the material shininess properties
-    GLfloat Shine = 16.0;
+    GLfloat Shine = 4.0;
     glUniform1f (shineLoc , Shine);
    
     return; 
@@ -146,7 +133,7 @@ int main(int argc, char* argv[]) {
     printf("GL_RENDERER : %s\n", glGetString(GL_RENDERER) );
 
     // 1) Generate Model Matrix        
-    glm::mat4 ModelMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -1.0f)); 
+    glm::mat4 ModelMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -2.0f)); 
    // glm::mat4 ModelMatrix = glm::mat4(1.0f);
 
     // 2) Generate View Matrix  
@@ -189,16 +176,11 @@ int main(int argc, char* argv[]) {
     // 10) Set the light and material properties
     SetLightParameters(shader.id());
  
-    numIndices = esGenSphere ( 100, 1.0f, &vertices, &normals,
-			  NULL, &indices );
+    numIndices = esGenSphere ( 100, 1.0f, &vertices, NULL, NULL, &indices );
 
     // 11) Pass the vertex VBO
-    //glVertexAttribPointer(ver, 3, GL_FLOAT, GL_FALSE, 0, vVertices);
-    //glEnableVertexAttribArray(ver);
     glVertexAttribPointer(ver, 3, GL_FLOAT, GL_FALSE, 0, vertices);
     glEnableVertexAttribArray(ver);
-    glVertexAttribPointer(ver, 3, GL_FLOAT, GL_FALSE, 0, normals);
-    glEnableVertexAttribArray(nor);
     
     // Load the MV matrix
     glUniformMatrix4fv ( mvLoc, 1, GL_FALSE, ( GLfloat * ) &MV[0][0] );
