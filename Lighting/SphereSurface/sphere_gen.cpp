@@ -1,6 +1,6 @@
 /************************************************************** 
  *
- *  esGenCube :	Generates vertices of a cube  
+ *  esGenCube :	Generates co-ordinates of a sphere  
  *  Author : Mathew P Joseph
  *  Email  : mathew.p.joseph@gmail.com
  *
