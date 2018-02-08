@@ -39,8 +39,7 @@ void main()
 
       // Specular component
       reflected_ray = normalize(reflect(-vertex_to_light, norm));
-      // The Eye Position is considered at the origin
-      eye_ray = vec3(0.0, 0.0, 0.0) - vertex_in_eye_coord;
+      eye_ray = LightPos_in_eye_coord - vertex_in_eye_coord;
       normalize_eye_ray = normalize(eye_ray);
       spec_mult = max(dot(reflected_ray, normalize_eye_ray), 0.0);
       spec_mult = pow(spec_mult, shininess);

@@ -50,6 +50,7 @@ static const GLuint HEIGHT = 500;
     GLint  l_specularLoc;
     GLint  m_specularLoc;
     GLint  light_Loc;
+    GLint  surfnormal_Loc;
     GLint  shineLoc;
     // Shader "IN" locations	
     GLint ver, nor, tex;
@@ -73,6 +74,7 @@ void SetLightParameters(GLuint shader_id)
     ver = glGetAttribLocation(shader.id(), "a_position");
     nor = glGetAttribLocation(shader.id(), "a_normal");
     light_Loc = glGetUniformLocation (shader.id(), "lightPosition" );
+    surfnormal_Loc = glGetUniformLocation (shader.id(), "surfaceNormal" );
     l_ambientLoc = glGetUniformLocation (shader.id(), "lambient" );
     m_ambientLoc = glGetUniformLocation (shader.id(), "mambient" );
     l_diffuseLoc = glGetUniformLocation (shader.id(), "ldiffuse" );
@@ -86,9 +88,13 @@ void SetLightParameters(GLuint shader_id)
 
     // Load the Light Position
     // Light Position in Model space
-    glm::vec3 lPosition = glm::vec4(0.0, 0.0, 0.0, 0.0);
-    glUniform4fv (light_Loc , 1, ( GLfloat * ) &lPosition);
+    glm::vec3 lPosition = glm::vec3(1.0, 1.0, 1.0);
+    glUniform3fv (light_Loc , 1, ( GLfloat * ) &lPosition);
     
+    // Load the Surface Normal Vector in Model Space
+    glm::vec3 surfNormal = glm::vec3(0.0, 0.0, 1.0);
+    glUniform3fv (surfnormal_Loc , 1, ( GLfloat * ) &surfNormal);
+     
     // Load the light ambient properties
     glm::vec3 lAmbient = glm::vec3(0.2, 0.0, 0.0);
     glUniform3fv (l_ambientLoc , 1, ( GLfloat * ) &lAmbient);
