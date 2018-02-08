@@ -32,8 +32,6 @@ int  esGenSphere ( int numSlices, float radius, GLfloat **vertices, GLfloat **no
 static const GLuint WIDTH  = 500;
 static const GLuint HEIGHT = 500;
 
-    // Making these global variables 
-
     GLuint 	shader_program;
     GLFWwindow* window;
 
@@ -58,7 +56,14 @@ static const GLuint HEIGHT = 500;
     // Shader "IN" locations	
     GLint ver, tex;
    
-Shader shader;
+    Shader shader;
+
+    glm::mat4 ModelMatrix; 
+    glm::mat4 Projection;
+    glm::mat4 ViewMatrix;
+    glm::mat4 MV;
+    glm::mat3 NM;
+    glm::mat4 MVP;
 
 void SetLightParameters(GLuint shader_id)
 {
@@ -112,6 +117,35 @@ void SetLightParameters(GLuint shader_id)
     return; 
 }
 
+    //!GLFW keyboard callback
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
+
+    static GLint entry = 0;
+    static GLfloat angle = 0.0f;
+    // key_callback somehow gets called twice for every key press. So limiting it to one...	 
+    if(entry%2 == 0){
+		// Clear the Depth Buffer for each frame!
+		glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+		
+		// Rotate the sphere
+    		angle += 1.0f;
+    		ModelMatrix = glm::rotate(ModelMatrix, angle, glm::vec3(0.0f, 1.0f, 0.0f)); 
+
+    		// Compute MV matrix
+    		MV = ViewMatrix*ModelMatrix;
+    		// Compute NM matrix
+    		NM = glm::transpose(glm::inverse(glm::mat3(MV)));
+    		// Compute MVP matrix
+    		MVP = Projection*ViewMatrix*ModelMatrix;
+    		// Load the MV matrix
+		glUniformMatrix4fv ( mvLoc, 1, GL_FALSE, ( GLfloat * ) &MV[0][0] );
+		// Load the MVP matrix
+		glUniformMatrix4fv ( mvpLoc, 1, GL_FALSE, ( GLfloat * ) &MVP[0][0] );
+		// Load the Normal matrix
+		glUniformMatrix3fv ( normalLoc, 1, GL_FALSE, ( GLfloat * ) &NM[0][0] );
+     	}
+     entry++;		
+} 
 
 int main(int argc, char* argv[]) {
     glfwInit();
@@ -126,6 +160,9 @@ int main(int argc, char* argv[]) {
     }		
     glfwMakeContextCurrent(window);
 
+    //Keyboard Callback
+    glfwSetKeyCallback(window, key_callback);
+
     glEnable ( GL_DEPTH_TEST );
     glDepthFunc( GL_LEQUAL );
     glCullFace( GL_BACK );	  
@@ -133,31 +170,30 @@ int main(int argc, char* argv[]) {
     printf("GL_RENDERER : %s\n", glGetString(GL_RENDERER) );
 
     // 1) Generate Model Matrix        
-    glm::mat4 ModelMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -2.0f)); 
+    ModelMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -2.0f)); 
    // glm::mat4 ModelMatrix = glm::mat4(1.0f);
 
     // 2) Generate View Matrix  
     glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 1.0f);
     glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 upVector = glm::vec3(0.0f, 1.0f, 0.0f);
-    glm::mat4 ViewMatrix = glm::lookAt(cameraPosition, cameraTarget, upVector);
+    ViewMatrix = glm::lookAt(cameraPosition, cameraTarget, upVector);
 
     // 3) Generate Projection Matrix 
     // Uncomment below line for Orthographic projection    
     //glm::mat4 Projection = glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -5.0f, 5.0f); 
     // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    glm::mat4 Projection = glm::perspective(glm::radians(60.0f),
-                           (float) WIDTH / (float)HEIGHT, 2.0f, 20.0f);
+    Projection = glm::perspective(glm::radians(60.0f), (float) WIDTH / (float)HEIGHT, 2.0f, 20.0f);
 
     // 5) Generate the Model-View Matrix
-    glm::mat4 MV = ViewMatrix*ModelMatrix;
+    MV = ViewMatrix*ModelMatrix;
 
     // 6) Generate the Normal Matrix
-    glm::mat3 NM = glm::transpose(glm::inverse(glm::mat3(MV)));
+    NM = glm::transpose(glm::inverse(glm::mat3(MV)));
     //std::cout << glm::to_string(NM) << std::endl;
     
     // 7) Generate the Model-View-Projection Matrix
-    glm::mat4 MVP = Projection*ViewMatrix*ModelMatrix;
+    MVP = Projection*ViewMatrix*ModelMatrix;
 
     // 8) Load the Shaders	
     shader.init("vertex.sh", "fragment.sh");
