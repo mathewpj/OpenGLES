@@ -26,9 +26,6 @@
 #define GLFW_INCLUDE_ES2
 #include <GLFW/glfw3.h>
 
-int  esGenSphere ( int numSlices, float radius, GLfloat **vertices, GLfloat **normals,
-                             GLfloat **texCoords, GLuint **indices );
-
 static const GLuint WIDTH  = 500;
 static const GLuint HEIGHT = 500;
 
@@ -193,8 +190,6 @@ int main(int argc, char* argv[]) {
     glVertexAttribPointer(ver, 3, GL_FLOAT, GL_FALSE, 0, vVertices);
     glEnableVertexAttribArray(ver);
     
-    //numIndices = esGenSphere ( 100, 2.0f, &vertices, &normals,
-    //                          &texcoords, &indices );
     // Load the MV matrix
     glUniformMatrix4fv ( mvLoc, 1, GL_FALSE, ( GLfloat * ) &MV[0][0] );
     // Load the MVP matrix
@@ -206,7 +201,6 @@ int main(int argc, char* argv[]) {
         glfwPollEvents();
         glClear(GL_COLOR_BUFFER_BIT);
         glDrawElements ( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices );
-        //glDrawElements ( GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, indices );
         glfwSwapBuffers(window);
     }
     glfwTerminate();
