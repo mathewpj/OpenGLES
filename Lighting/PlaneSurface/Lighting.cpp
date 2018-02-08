@@ -29,12 +29,8 @@
 static const GLuint WIDTH  = 500;
 static const GLuint HEIGHT = 500;
 
-    // Making these global variables 
-
     GLuint shader_program;
-    GLint numIndices;
     GLFWwindow* window;
-    
     
     // Uniform locations
     GLint  mvpLoc;
@@ -49,11 +45,9 @@ static const GLuint HEIGHT = 500;
     GLint  light_Loc;
     GLint  surfnormal_Loc;
     GLint  shineLoc;
-    // Shader "IN" locations	
+    
+   // Shader "IN" locations	
     GLint ver, nor, tex;
-   
-    GLfloat  aspect;
-    GLfloat  angle;
 
 static const GLfloat vVertices[] = {
                             -3.0f, -3.0f, -6.0f,  // Position 0
