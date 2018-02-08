@@ -40,21 +40,12 @@ static const GLuint HEIGHT = 500;
     GLuint   *indices;
     GLint    numIndices;
  
-    
     // Uniform locations
     GLint  mvpLoc;
     GLint  mvLoc;
     GLint  normalLoc;
-    GLint  l_ambientLoc;
-    GLint  m_ambientLoc;
-    GLint  l_diffuseLoc;
-    GLint  m_diffuseLoc;
-    GLint  l_specularLoc;
-    GLint  m_specularLoc;
-    GLint  light_Loc;
-    GLint  shineLoc;
     // Shader "IN" locations	
-    GLint ver, tex;
+    GLint ver;
    
     Shader shader;
 
@@ -67,6 +58,15 @@ static const GLuint HEIGHT = 500;
 
 void SetLightParameters(GLuint shader_id)
 {
+    // Uniform locations
+    GLint  l_ambientLoc;
+    GLint  m_ambientLoc;
+    GLint  l_diffuseLoc;
+    GLint  m_diffuseLoc;
+    GLint  l_specularLoc;
+    GLint  m_specularLoc;
+    GLint  light_Loc;
+    GLint  shineLoc;
 
     ver = glGetAttribLocation(shader.id(), "a_position");
     light_Loc = glGetUniformLocation (shader.id(), "lightPosition" );
