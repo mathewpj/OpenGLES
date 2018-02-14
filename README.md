@@ -17,3 +17,6 @@ Directories,
 		    	 
 5) Lighting	     -  Implements Fixed Pipeline lighting models 
 		        i.e., ambient, diffuse, specular 
+
+6) Effects	     -  Implements features like Normal mapping, glossy 
+			surfaces etc	
