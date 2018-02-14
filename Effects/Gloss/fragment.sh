@@ -6,7 +6,8 @@ in vec3 vertex_in_eye_coord;
 in vec3 LightPos_in_eye_coord;
 in vec2 v_texCoord;
 
-uniform sampler2D s_texture;
+uniform sampler2D earth_texture;
+uniform sampler2D earth_stencil_texture;
 
 layout(location = 0) out vec4 outColor;
 
@@ -48,10 +49,10 @@ void main()
       normalize_eye_ray = normalize(eye_ray);
       spec_mult = max(dot(reflected_ray, normalize_eye_ray), 0.0);
       spec_mult = pow(spec_mult, shininess);
-      specular_comp = spec_mult*lspecular*mspecular;
+      specular_comp = spec_mult*lspecular*mspecular*vec3(texture(earth_stencil_texture, v_texCoord ));
 
-     outColor = vec4( ambient + diffuse_comp + specular_comp, 1.0 );
-     outColor = outColor + texture(s_texture, v_texCoord );
+      outColor = vec4( ambient + diffuse_comp + specular_comp, 1.0 );
+      outColor = outColor + texture(earth_texture, v_texCoord );
 }
 
 
