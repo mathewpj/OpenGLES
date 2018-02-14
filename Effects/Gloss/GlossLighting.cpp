@@ -125,7 +125,7 @@ void SetLightParameters(GLuint shader_id)
 
     // Load the Light Position
     // Light Position in Model space
-    glm::vec3 lPosition = glm::vec4(1.0, 0.0, 0.0, 0.0);
+    glm::vec3 lPosition = glm::vec4(1.0, 1.0, 1.0, 0.0);
     glUniform4fv (light_Loc , 1, ( GLfloat * ) &lPosition);
     
     // Load the light ambient properties
@@ -153,7 +153,7 @@ void SetLightParameters(GLuint shader_id)
     glUniform3fv (m_specularLoc , 1, ( GLfloat * ) &mSpecular);
     	 
     // Load the material shininess properties
-    GLfloat Shine = 4.0;
+    GLfloat Shine = 2.0;
     glUniform1f (shineLoc , Shine);
    
     return; 
@@ -217,7 +217,7 @@ int main(int argc, char* argv[]) {
 
 
     // 1) Generate Model Matrix        
-    ModelMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -2.0f)); 
+    ModelMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -4.0f)); 
     //ModelMatrix = glm::mat4(1.0f);
 
     // 2) Generate View Matrix  
@@ -228,9 +228,9 @@ int main(int argc, char* argv[]) {
 
     // 3) Generate Projection Matrix 
     // Uncomment below line for Orthographic projection    
-    Projection = glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -5.0f, 5.0f); 
+    // Projection = glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -5.0f, 5.0f); 
     // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    //Projection = glm::perspective(glm::radians(60.0f), (float) WIDTH / (float)HEIGHT, 2.0f, 20.0f);
+    Projection = glm::perspective(glm::radians(60.0f), (float) WIDTH / (float)HEIGHT, 2.0f, 20.0f);
 
     // 5) Generate the Model-View Matrix
     MV = ViewMatrix*ModelMatrix;
@@ -276,7 +276,7 @@ int main(int argc, char* argv[]) {
     // 12) Set the light and material properties
     SetLightParameters(shader.id());
  
-    numIndices = esGenSphere ( 50, 3.0f, &vertices, NULL, &texcoords, &indices );
+    numIndices = esGenSphere ( 50, 2.0f, &vertices, NULL, &texcoords, &indices );
 
     // 13) Pass the vertex & texure coordinates BO
     glVertexAttribPointer(ver, 3, GL_FLOAT, GL_FALSE, 0, vertices);
