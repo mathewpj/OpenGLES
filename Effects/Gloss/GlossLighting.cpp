@@ -10,7 +10,7 @@
  *  sudo apt-get install libglfw3-dev libgles2-mesa-dev
  *  
  *  g++ GlossLighting.cpp sphere_gen.cpp readBMP.cpp shader.cpp 
- *   -g -I /home/mathew/SelfStudy/glm -lGLESv2 -lglfw -lm -o Gloss
+ *   -g -I <path to glm> -lGLESv2 -lglfw -lm -o Gloss
  *
  *  Author : Mathew P Joseph
  *  email  : mathew.p.joseph@gmail.com
