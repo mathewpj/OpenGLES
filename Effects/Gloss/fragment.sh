@@ -3,7 +3,7 @@
 precision mediump float;
 in vec3 vertex_to_fragment_normal;
 in vec3 vertex_in_eye_coord;
-in vec3 LightPos_in_model_coord;
+in vec3 LightPos_in_eye_coord;
 in vec2 v_texCoord;
 
 uniform sampler2D earth_texture;
@@ -38,14 +38,14 @@ void main()
       
       // Diffuse component
       norm = normalize(vertex_to_fragment_normal);
-      vertex_to_light = normalize(LightPos_in_model_coord - vertex_in_eye_coord);
+      vertex_to_light = normalize(LightPos_in_eye_coord - vertex_in_eye_coord);
       diffuse_mult = max(dot(norm, vertex_to_light), 0.0);
       diffuse_comp = diffuse_mult*ldiffuse*mdiffuse;
 
       // Specular component
       reflected_ray = normalize(reflect(-vertex_to_light, norm));
       // The Eye Position is considered at the origin
-      eye_ray = LightPos_in_model_coord - vertex_in_eye_coord;
+      eye_ray = LightPos_in_eye_coord - vertex_in_eye_coord;
       normalize_eye_ray = normalize(eye_ray);
       spec_mult = max(dot(reflected_ray, normalize_eye_ray), 0.0);
       spec_mult = pow(spec_mult, shininess);

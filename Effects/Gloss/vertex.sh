@@ -11,13 +11,13 @@ layout(location = 2) in vec2 a_texCoord;
 
 out vec3 vertex_to_fragment_normal;
 out vec3 vertex_in_eye_coord;
-out vec3 LightPos_in_model_coord;
+out vec3 LightPos_in_eye_coord;
 out vec2 v_texCoord;
 
 void main()
 {
       vertex_in_eye_coord = vec3(mvMatrix * vec4(a_position, 1.0));
-      LightPos_in_model_coord = vec3(lightPosition);
+      LightPos_in_eye_coord = mat3(mvMatrix)*vec3(lightPosition);
       // In the case of a Sphere normalized vertex co-ordinates 
       // is equal to surface normals	
       vertex_to_fragment_normal = normalMatrix*normalize(a_position);

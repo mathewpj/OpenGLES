@@ -125,7 +125,7 @@ void SetLightParameters(GLuint shader_id)
 
     // Load the Light Position
     // Light Position in Model space
-    glm::vec3 lPosition = glm::vec4(1.0, 1.0, 1.0, 0.0);
+    glm::vec3 lPosition = glm::vec4(4.0, 0.0, 0.0, 0.0);
     glUniform4fv (light_Loc , 1, ( GLfloat * ) &lPosition);
     
     // Load the light ambient properties
@@ -214,23 +214,21 @@ int main(int argc, char* argv[]) {
     printf("GL_VERSION  : %s\n", glGetString(GL_VERSION) );
     printf("GL_RENDERER : %s\n", glGetString(GL_RENDERER) );
 
-
-
     // 1) Generate Model Matrix        
-    ModelMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -4.0f)); 
+    ModelMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
     //ModelMatrix = glm::mat4(1.0f);
 
     // 2) Generate View Matrix  
-    glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 2.0f);
+    glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 4.0f);
     glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 upVector = glm::vec3(0.0f, 1.0f, 0.0f);
     ViewMatrix = glm::lookAt(cameraPosition, cameraTarget, upVector);
 
     // 3) Generate Projection Matrix 
     // Uncomment below line for Orthographic projection    
-    // Projection = glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -5.0f, 5.0f); 
+     Projection = glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -5.0f, 5.0f); 
     // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    Projection = glm::perspective(glm::radians(60.0f), (float) WIDTH / (float)HEIGHT, 2.0f, 20.0f);
+    // Projection = glm::perspective(glm::radians(60.0f), (float) WIDTH / (float)HEIGHT, 2.0f, 20.0f);
 
     // 5) Generate the Model-View Matrix
     MV = ViewMatrix*ModelMatrix;
