@@ -1,73 +1,62 @@
-#version 130
+#version 300 es
 
-uniform vec3 LightPos;
-uniform float shininess;
+precision mediump float;
+in vec3 vertex_in_eye_coord;
+in vec3 LightPos_in_Normal_coord;
+in vec3 EyePos_in_Normal_coord;
+in vec2 v_texCoord;
 
-// Material properties 
-uniform vec3 mambient;
-uniform vec3 mdiffuse;
-uniform vec3 mspecular;
+uniform sampler2D Texture;
+uniform sampler2D Normal_Texture;
 
-//Light properties
+layout(location = 0) out vec4 outColor;
+
 uniform vec3 lambient;
 uniform vec3 ldiffuse;
 uniform vec3 lspecular;
 
+uniform vec3 mambient;
+uniform vec3 mdiffuse;
+uniform vec3 mspecular;
 
-in vec3 vertex_to_fragment_normal; // Passed in from VS
-in vec3 vertex_in_eye_coord;	   // Passed in from VS	
-in vec3 tangentSurface2light;	   // Passed in from VS
-in vec3 tangentSurface2view;	   // Passed in from VS	
+uniform float shininess;
 
-in vec2 texcoord_vtx_fra;
-uniform sampler2D Texture1;
+void main()
+{
+      vec3 vertex_to_light;
+      vec3 norm;
+      float diffuse_mult;
+      vec3 diffuse_comp;
+      vec3 reflected_ray;
+      float spec_mult;
+      vec3 normalize_eye_ray;
+      vec3 eye_ray;
+      vec3 specular_comp = vec3(0.0, 0.0, 0.0);
 
-uniform sampler2D Normalmap;
+      // Ambient component
+      vec3 ambient = lambient*mambient;
 
+      // Diffuse component
+      // Since the unit normal vector can be -1<|x|<1
+      norm = normalize(texture(Normal_Texture, v_texCoord).xyz*2.0 - 1.0);
+      vertex_to_light = normalize(LightPos_in_Normal_coord - vertex_in_eye_coord);
+      diffuse_mult = max(dot(norm, vertex_to_light), 0.0);
+      diffuse_comp = diffuse_mult*ldiffuse*mdiffuse;
 
-void main() {
-
-vec3 vertex_to_light;
-vec3 norm;
-
-float diffuse_mult;
-vec3 diffuse_comp;
-
-vec3 reflected_ray;
-float spec_mult;
-vec3 normalize_eye_ray;
-vec3 eye_ray;
-vec3 specular_comp;
-
-
-vec3 texcolor;
-texcolor = vec3(texture(Texture1, texcoord_vtx_fra));
-
-
-// Ambient component 
-//vec3 ambient = texcolor*lambient;
-vec3 ambient = mambient*lambient;
-
-// Diffuse component 
-// Since the unit normal vector can be -1<|x|<1
-norm = normalize(texture(Normalmap, texcoord_vtx_fra).xyz*2.0 - 1.0);
-vertex_to_light = normalize(tangentSurface2light);
-diffuse_mult = max(dot(norm, vertex_to_light), 0.0);
-diffuse_comp = diffuse_mult*texcolor*ldiffuse;
-
-// Specular component
-reflected_ray = normalize(reflect(-vertex_to_light, norm));
-// The Eye Position is considered at the origin
-normalize_eye_ray = normalize(tangentSurface2view);
-spec_mult = max(dot(reflected_ray, normalize_eye_ray), 0.0);
-spec_mult = pow(spec_mult, shininess);
-
-specular_comp = spec_mult*lspecular*mspecular;
+      vec3 v2l = normalize(LightPos_in_Normal_coord - vertex_in_eye_coord);
+      vec3 v2e = normalize(vec3(0.0, 0.0, 0.0) - vertex_in_eye_coord);
 
 
-gl_FragColor = vec4(texcolor, 1.0) +vec4(ambient + diffuse_comp + specular_comp, 1.0); 
+      // Specular component
+      reflected_ray = normalize(reflect(-vertex_to_light, norm));
+      // The Eye Position is considered at the origin
+      eye_ray = LightPos_in_Normal_coord - vertex_in_eye_coord;
+      normalize_eye_ray = normalize(eye_ray);
+      spec_mult = max(dot(reflected_ray, normalize_eye_ray), 0.0);
+      spec_mult = pow(spec_mult, shininess);
+      specular_comp = spec_mult*lspecular*mspecular;
 
-
-
-
+      outColor = vec4( ambient + diffuse_comp + specular_comp, 1.0 );
+      outColor = outColor + texture(Texture, v_texCoord );
 }
+   
