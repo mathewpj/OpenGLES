@@ -4,7 +4,7 @@ Contains OpenGLES related projects.
 Directories,
 
 1) OpenGLES_Emulator -  Starting point for anyone intending to use glfw 
-                        to emulate OpenGLES development a desktop
+                        to emulate OpenGLES development on a desktop
 
 2) Shapes   	     -  Contains OpenGL projects to create basic shapes 
 		        such as, cubes, spheres etc
