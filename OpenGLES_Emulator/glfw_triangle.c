@@ -26,6 +26,14 @@
 
 static const GLuint WIDTH = 800;
 static const GLuint HEIGHT = 600;
+
+    /* 	- layout(location = 0) refers to the buffer used to feed 
+	position attribute. It could have been 5 or another integer 
+	but not more than GL_MAX_VERTEX_ATTRIBS 
+	- "in" indicates this is a input variable 
+    	gl_Position = vec4(position, 1.0) transforms position into
+	homogenous co-ordinate system where [x y z 1] is a point
+	and [x y z 0] is a vector] */
 static const GLchar* vertex_shader_source =
     "#version 300 es\n"
     "layout(location = 0) in vec3 position;\n"
@@ -42,7 +50,7 @@ static const GLchar* fragment_shader_source =
 static const GLfloat vertices[] = {
         0.0f,  0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
-    -0.5f, -0.5f, 0.0f,
+       -0.5f, -0.5f, 0.0f,
 };
 
 GLint common_get_shader_program(const char *vertex_shader_source, const char *fragment_shader_source) {
@@ -110,12 +118,33 @@ int main(void) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glViewport(0, 0, WIDTH, HEIGHT);
 
+    /* The sequence of using a Vertex Buffer Object (VBO) 	
+    	1) glGenBuffers
+	2) glBindBuffer
+	3) glBufferData
+
+	4) glVertexAttribPointer
+	5) glEnableVertexAttribArray
+
+	The Buffer that glVertexAttribPointer implicity points to 
+	(or uses) is the one specified in glBufferData. In this example
+	it is the buffer that stores the verticies co-ordinates. 
+	The stride value (4th argument) in glVertexAttribPointer 
+	(in this case zero) is used tostride over data specifed by 
+	glBufferData. In this example it Is zero Since nothing is 
+	interleaved between the vertices co-ordinates. However if vertices 
+	co-ordinates were interleaved with vertices color the stride would 
+	be 6 (i.e., 3 for vertices co-ordinates and 3 for color (rgb).  
+    */
+	
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    
+    // glVertexAttribPointer(GLuint index, GLint size, GLenum type, 
+    // GLboolean normalized, GLsizei stride, const GLvoid * pointer);
     glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
     glEnableVertexAttribArray(pos);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
