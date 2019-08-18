@@ -12,7 +12,7 @@
  *  working.
  *
  *  sudo apt-get install libglfw3-dev libgles2-mesa-dev
- *  gcc glfw_triangle.c -lGLESv2 -lglfw
+ *  gcc glfw_triangle_mutli_vertex_attributes.c -lGLESv2 -lglfw
  *
  *  Appropriator : mathew.p.joseph@gmail.com
  *
@@ -121,9 +121,7 @@ int main(void) {
 
     shader_program = common_get_shader_program(vertex_shader_source, fragment_shader_source);
     pos = glGetAttribLocation(shader_program, "position");
-    printf("pos = %d \n", pos);	
     col = glGetAttribLocation(shader_program, "color");
-    printf("col = %d \n", col);	
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glViewport(0, 0, WIDTH, HEIGHT);
