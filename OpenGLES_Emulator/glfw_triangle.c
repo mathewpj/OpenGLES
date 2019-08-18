@@ -134,7 +134,8 @@ int main(void) {
 	glBufferData. In this example it Is zero Since nothing is 
 	interleaved between the vertices co-ordinates. However if vertices 
 	co-ordinates were interleaved with vertices color the stride would 
-	be 6 (i.e., 3 for vertices co-ordinates and 3 for color (rgb).  
+	be 6 (i.e., 3 for vertices co-ordinates and 3 for color (rgb). 
+	Check out glfw_triangle_mutli_vertex_attributes.c for an example 
     */
 	
     glGenBuffers(1, &vbo);
